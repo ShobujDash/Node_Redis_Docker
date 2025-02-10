@@ -5,15 +5,35 @@ import { IoClose } from "react-icons/io5";
 import Loading from "./Loading";
 import UserSearchCard from "./UserSearchCard";
 import axios from 'axios'
+import { useSelector } from "react-redux";
 
 
 
 function SearchUser({ onClose }) {
+  const user = useSelector((state) => state.user);
   const [searchUser, setSearchUser] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  const handleSearchUser = async () => {
+  // const handleSearchUser = async () => {
+  //   const URL = `${import.meta.env.VITE_APP_BACKEND_URL}/api/search-user`;
+
+  //   try {
+  //     setLoading(true);
+  //     const response = await axios.post(URL, {
+  //       search: search,
+  //     });
+  //     setLoading(false);
+  //     setSearchUser(response?.data?.data);
+  //   } catch (error) {
+  //     toast.error(error?.response?.data?.message);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   handleSearchUser();
+  // }, [search]);
+ const handleSearchUser = async () => {
     const URL = `${import.meta.env.VITE_APP_BACKEND_URL}/api/search-user`;
 
     try {
@@ -22,15 +42,17 @@ function SearchUser({ onClose }) {
         search: search,
       });
       setLoading(false);
-      setSearchUser(response?.data?.data);
+
+      // Filter out user with _id
+      const filteredUsers = response?.data?.data?.filter((sUser) => (
+        sUser._id !== user._id
+      ))
+
+      setSearchUser(filteredUsers);
     } catch (error) {
       toast.error(error?.response?.data?.message);
     }
   };
-
-  useEffect(() => {
-    handleSearchUser();
-  }, [search]);
 
 
   return (
