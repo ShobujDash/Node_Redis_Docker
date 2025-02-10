@@ -38,12 +38,20 @@ function Home() {
       }
     } catch (error) {
       console.log(error.message);
+      navigate("/email");
     }
   };
 
   useEffect(() => {
     fetchUserDetails();
   }, []);
+
+  // Redirect if user is null
+  useEffect(() => {
+    if (!user) {
+      navigate("/email");
+    }
+  }, [user]);
 
   // socket connection
   useEffect(() => {
